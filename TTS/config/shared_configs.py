@@ -107,7 +107,7 @@ class BaseAudioConfig(Coqpit):
     frame_length_ms: int = None
     stft_pad_mode: str = "reflect"
     # audio processing parameters
-    sample_rate: int = 22050
+    sample_rate: int = 16000
     resample: bool = False
     preemphasis: float = 0.0
     ref_level_db: int = 20
