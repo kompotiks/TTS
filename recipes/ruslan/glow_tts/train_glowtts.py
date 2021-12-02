@@ -26,10 +26,10 @@ dataset_config = BaseDatasetConfig(
 # INITIALIZE THE TRAINING CONFIGURATION
 # Configure the model. Every config class inherits the BaseTTSConfig.
 config = GlowTTSConfig(
-    batch_size=32,
-    eval_batch_size=16,
-    num_loader_workers=4,
-    num_eval_loader_workers=4,
+    batch_size=64,
+    eval_batch_size=32,
+    num_loader_workers=8,
+    num_eval_loader_workers=8,
     run_eval=True,
     test_delay_epochs=-1,
     epochs=1000,
