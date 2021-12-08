@@ -207,7 +207,7 @@ class BaseTTSConfig(BaseTrainingConfig):
     compute_f0: bool = False
     compute_linear_spec: bool = False
     use_noise_augment: bool = False
-    add_blank: bool = False
+    add_blank: bool = True
     # dataset
     datasets: List[BaseDatasetConfig] = field(default_factory=lambda: [BaseDatasetConfig()])
     # optimizer

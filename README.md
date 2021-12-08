@@ -1,3 +1,4 @@
+tts-server --config_path models/config.json --model_path models/best_model.pth.tar --vocoder_path models/best_model_v1.pth.tar --vocoder_config_path models/config_v.json
 # <img src="https://raw.githubusercontent.com/coqui-ai/TTS/main/images/coqui-log-green-TTS.png" height="56"/>
 
 🐸TTS is a library for advanced Text-to-Speech generation. It's built on the latest research, was designed to achieve the best trade-off among ease-of-training, speed and quality.

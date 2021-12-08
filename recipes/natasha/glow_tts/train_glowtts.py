@@ -17,7 +17,7 @@ from TTS.utils.audio import AudioProcessor
 output_path = os.path.dirname(os.path.abspath(__file__))
 
 dataset_config = BaseDatasetConfig(
-    name="ruslan", meta_file_train="metadata.csv", path=os.path.join(output_path, "../RUSLAN/")
+    name="ruslan", meta_file_train="metadata.csv", path=os.path.join(output_path, "../NATASHA/")
 )
 
 # INITIALIZE THE TRAINING CONFIGURATION
@@ -32,7 +32,7 @@ config = GlowTTSConfig(
     epochs=1000,
     text_cleaner="phoneme_cleaners",
     use_phonemes=True,
-    phoneme_language="ru-ru",
+    phoneme_language="ru-ru+",
     phoneme_cache_path=os.path.join(output_path, "phoneme_cache"),
     print_step=25,
     print_eval=False,
@@ -40,6 +40,9 @@ config = GlowTTSConfig(
     output_path=output_path,
     datasets=[dataset_config],
 )
+
+config.audio.sample_rate = 22050
+
 # INITIALIZE THE AUDIO PROCESSOR
 # Audio processor is used for feature extraction and audio I/O.
 # It mainly serves to the dataloader and the training loggers.

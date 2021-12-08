@@ -49,7 +49,6 @@ if platform.system() != "Windows":
     rlimit = resource.getrlimit(resource.RLIMIT_NOFILE)
     resource.setrlimit(resource.RLIMIT_NOFILE, (4096, rlimit[1]))
 
-
 if is_apex_available():
     from apex import amp
 
@@ -91,20 +90,20 @@ class TrainingArgs(Coqpit):
 
 class Trainer:
     def __init__(  # pylint: disable=dangerous-default-value
-        self,
-        args: Union[Coqpit, Namespace],
-        config: Coqpit,
-        output_path: str,
-        c_logger: ConsoleLogger = None,
-        dashboard_logger: Union[TensorboardLogger, WandbLogger] = None,
-        model: nn.Module = None,
-        get_model: Callable = None,
-        get_data_samples: Callable = None,
-        train_samples: List = None,
-        eval_samples: List = None,
-        cudnn_benchmark: bool = False,
-        training_assets: Dict = {},
-        parse_command_line_args: bool = True,
+            self,
+            args: Union[Coqpit, Namespace],
+            config: Coqpit,
+            output_path: str,
+            c_logger: ConsoleLogger = None,
+            dashboard_logger: Union[TensorboardLogger, WandbLogger] = None,
+            model: nn.Module = None,
+            get_model: Callable = None,
+            get_data_samples: Callable = None,
+            train_samples: List = None,
+            eval_samples: List = None,
+            cudnn_benchmark: bool = False,
+            training_assets: Dict = {},
+            parse_command_line_args: bool = True,
     ) -> None:
         """Simple yet powerful 🐸💬 TTS trainer for PyTorch. It can train all the available `tts` and `vocoder` models
         or easily be customized.
@@ -339,7 +338,7 @@ class Trainer:
         return args, coqpit_overrides
 
     def init_training(
-        self, args: TrainingArgs, coqpit_overrides: Dict, config: Coqpit = None
+            self, args: TrainingArgs, coqpit_overrides: Dict, config: Coqpit = None
     ):  # pylint: disable=no-self-use
         """Initialize training and update model configs from command line arguments.
 
@@ -401,12 +400,12 @@ class Trainer:
         return None, None
 
     def restore_model(
-        self,
-        config: Coqpit,
-        restore_path: str,
-        model: nn.Module,
-        optimizer: torch.optim.Optimizer,
-        scaler: torch.cuda.amp.GradScaler = None,
+            self,
+            config: Coqpit,
+            restore_path: str,
+            model: nn.Module,
+            optimizer: torch.optim.Optimizer,
+            scaler: torch.cuda.amp.GradScaler = None,
     ) -> Tuple[nn.Module, torch.optim.Optimizer, torch.cuda.amp.GradScaler, int]:
         """Restore training from an old run. It restores model, optimizer, AMP scaler and training stats.
 
@@ -465,14 +464,14 @@ class Trainer:
     #########################
 
     def _get_loader(
-        self,
-        model: nn.Module,
-        config: Coqpit,
-        assets: Dict,
-        is_eval: bool,
-        data_items: List,
-        verbose: bool,
-        num_gpus: int,
+            self,
+            model: nn.Module,
+            config: Coqpit,
+            assets: Dict,
+            is_eval: bool,
+            data_items: List,
+            verbose: bool,
+            num_gpus: int,
     ) -> DataLoader:
         if num_gpus > 1:
             if hasattr(model.module, "get_data_loader"):
@@ -537,7 +536,7 @@ class Trainer:
 
     @staticmethod
     def _model_train_step(
-        batch: Dict, model: nn.Module, criterion: nn.Module, optimizer_idx: int = None
+            batch: Dict, model: nn.Module, criterion: nn.Module, optimizer_idx: int = None
     ) -> Tuple[Dict, Dict]:
         """
         Perform a trainig forward step. Compute model outputs and losses.
@@ -560,15 +559,15 @@ class Trainer:
         return model.train_step(*input_args)
 
     def _optimize(
-        self,
-        batch: Dict,
-        model: nn.Module,
-        optimizer: Union[torch.optim.Optimizer, List],
-        scaler: "AMPScaler",
-        criterion: nn.Module,
-        scheduler: Union[torch.optim.lr_scheduler._LRScheduler, List],  # pylint: disable=protected-access
-        config: Coqpit,
-        optimizer_idx: int = None,
+            self,
+            batch: Dict,
+            model: nn.Module,
+            optimizer: Union[torch.optim.Optimizer, List],
+            scaler: "AMPScaler",
+            criterion: nn.Module,
+            scheduler: Union[torch.optim.lr_scheduler._LRScheduler, List],  # pylint: disable=protected-access
+            config: Coqpit,
+            optimizer_idx: int = None,
     ) -> Tuple[Dict, Dict, int]:
         """Perform a forward - backward pass and run the optimizer.
 
@@ -842,7 +841,7 @@ class Trainer:
 
     @staticmethod
     def _model_eval_step(
-        batch: Dict, model: nn.Module, criterion: nn.Module, optimizer_idx: int = None
+            batch: Dict, model: nn.Module, criterion: nn.Module, optimizer_idx: int = None
     ) -> Tuple[Dict, Dict]:
         """
         Perform a evaluation forward pass. Compute model outputs and losses with no gradients.
@@ -988,6 +987,31 @@ class Trainer:
             self.keep_avg_eval = KeepAverage() if self.config.run_eval else None
             self.epochs_done = epoch
             self.c_logger.print_epoch_start(epoch, self.config.epochs, self.output_path)
+
+            # ---
+
+            self.eval_loader = (
+                self.get_eval_dataloader(
+                    self.training_assets,
+                    self.eval_samples,
+                    verbose=True,
+                )
+                if self.config.run_eval
+                else None
+            )
+            self.train_loader = self.get_train_dataloader(
+                self.training_assets,
+                self.train_samples,
+                verbose=True,
+            )
+            for eval, train in zip(self.eval_loader, self.train_loader):
+                print(eval)
+                print(train)
+                break
+            exit()
+
+            # ---
+
             if not self.args.skip_train_epoch:
                 self.train_epoch()
             if self.config.run_eval:
@@ -1093,7 +1117,7 @@ class Trainer:
 
     @staticmethod
     def get_scheduler(
-        model: nn.Module, config: Coqpit, optimizer: Union[torch.optim.Optimizer, List]
+            model: nn.Module, config: Coqpit, optimizer: Union[torch.optim.Optimizer, List]
     ) -> Union[torch.optim.lr_scheduler._LRScheduler, List]:  # pylint: disable=protected-access
         """Receive the scheduler from the model if model implements `get_scheduler()` else
         check the config and try initiating the scheduler.

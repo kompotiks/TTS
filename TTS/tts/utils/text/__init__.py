@@ -5,6 +5,7 @@ import re
 from typing import Dict, List
 
 import gruut
+import epitran
 
 from TTS.tts.utils.text import cleaners
 from TTS.tts.utils.text.chinese_mandarin.phonemizer import chinese_text_to_phonemes
@@ -31,6 +32,8 @@ PHONEME_PUNCTUATION_PATTERN = r"[" + _punctuations.replace(" ", "") + "]+"
 # Table for str.translate to fix gruut/TTS phoneme mismatch
 GRUUT_TRANS_TABLE = str.maketrans("g", "ɡ")
 
+epi_ru = epitran.Epitran('rus-Cyrl')
+
 
 def text2phone(text, language, use_espeak_phonemes=False):
     """Convert graphemes to phonemes.
@@ -50,6 +53,19 @@ def text2phone(text, language, use_espeak_phonemes=False):
     if language == "ja-jp":
         ph = japanese_text_to_phonemes(text)
         return ph
+
+    if language == "ru-ru":
+        ph = epi_ru.trans_list(text)
+        return "|".join(ph)
+
+    if language == "ru-ru+":
+        idx_plus = text.find('+') - 1
+        text = text.replace('+', '')
+
+        ph = epi_ru.trans_list(text)
+        if ':' not in ph[idx_plus]:
+            ph[idx_plus] += ':'
+        return "|".join(ph)
 
     if gruut.is_language_supported(language):
         # Use gruut for phonemization
