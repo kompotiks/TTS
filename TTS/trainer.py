@@ -988,30 +988,6 @@ class Trainer:
             self.epochs_done = epoch
             self.c_logger.print_epoch_start(epoch, self.config.epochs, self.output_path)
 
-            # ---
-
-            self.eval_loader = (
-                self.get_eval_dataloader(
-                    self.training_assets,
-                    self.eval_samples,
-                    verbose=True,
-                )
-                if self.config.run_eval
-                else None
-            )
-            self.train_loader = self.get_train_dataloader(
-                self.training_assets,
-                self.train_samples,
-                verbose=True,
-            )
-            for eval, train in zip(self.eval_loader, self.train_loader):
-                print(eval)
-                print(train)
-                break
-            exit()
-
-            # ---
-
             if not self.args.skip_train_epoch:
                 self.train_epoch()
             if self.config.run_eval:
