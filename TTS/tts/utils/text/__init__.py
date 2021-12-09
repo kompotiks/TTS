@@ -54,11 +54,11 @@ def text2phone(text, language, use_espeak_phonemes=False):
         ph = japanese_text_to_phonemes(text)
         return ph
 
-    if language == "ru-ru":
+    if language == "ru-ru+":
         ph = epi_ru.trans_list(text)
         return "|".join(ph)
 
-    if language == "ru-ru+":
+    if language == "ru-ru++":
         idx_plus = text.find('+') - 1
         text = text.replace('+', '')
 
